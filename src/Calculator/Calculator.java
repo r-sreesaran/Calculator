@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Calculator;
+
+package calculator;
+
 
 /**
  *
@@ -85,7 +87,7 @@ class CalculatorPanel extends JPanel {
         addButton("8", insert);
         addButton("7", insert);
         addButton("/", insert);
-addButton("^", insert);
+        addButton("^", insert);
 
         addButton("6", insert);
         addButton("5", insert);
@@ -151,23 +153,24 @@ addButton("^", insert);
             System.out.println("it is working properly");
             if (value == null) {
                 i++;
-            }else if (operatorchecker("(")) {
-              ArrayList<String> calsub = new ArrayList<String>();
-               String fullexpression1="";
-                int d= operatorcheckerpos(")");
-                int j=i;
-                while(j<d)
-                {
-                fullexpression1 = cal.get(j)+fullexpression1;
-                cal.set(j,null);
-                j++;
-                }
-                createstack(calsub,fullexpression1);
-                finalcalculation(calsub);
-                String temp1 = getnext(calsub,0);
-                cal.set(i,temp1);
-                i++;
             }
+//            else if (operatorchecker("(")) {
+//              ArrayList<String> calsub = new ArrayList<String>();
+//               String fullexpression1="";
+//                int d= operatorcheckerpos(")");
+//                int j=i;
+//                while(j<d)
+//                {
+//                fullexpression1 = cal.get(j)+fullexpression1;
+//                cal.set(j,null);
+//                j++;
+//                }
+//                createstack(calsub,fullexpression1);
+//                finalcalculation(calsub);
+//                String temp1 = getnext(calsub,0);
+//                cal.set(i,temp1);
+//                i++;
+//            }
             else if (operatorchecker("^")) {
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
@@ -177,7 +180,7 @@ addButton("^", insert);
                 cal.set(dpos, String.valueOf(d));
                 System.out.println("the inserted value is " + cal.get(dpos));
                 cal.set(getprevious(dpos - 1), null);
-                cal.set((dpos + 1), null);
+                cal.set(getnext(dpos + 1), null);
                 i++;
             }else if (operatorchecker("$")) {
                 String next = getnext(cal, dpos + 1);
@@ -198,7 +201,7 @@ addButton("^", insert);
                 cal.set(dpos, String.valueOf(d));
                 System.out.println("the inserted value is " + cal.get(dpos));
                 cal.set(getprevious(dpos - 1), null);
-                cal.set((dpos + 1), null);
+                cal.set(getnext(dpos + 1), null);
                 i++;
             } else if (operatorchecker("*")) {
                 String prev = getprevious(cal, dpos - 1);
@@ -323,13 +326,40 @@ addButton("^", insert);
 
     public void createstack(ArrayList<String> cal1,String fullexpression) {
         fullexpressionLength = fullexpression.length();
+        
         System.out.println("the size of expression" + fullexpressionLength);
         while (i < fullexpressionLength) {
             charat = fullexpression.charAt(i);
-            if (charat == '+' || charat == '-' || charat == '*'
-                    || charat == '/' || charat == '='|| charat=='(' || charat==')') {
-
+           if(charat=='(' )
+           {
+               cal1.add(String.valueOf(charat));
+                System.out.println("the operator is " + charat);
+                       i++;
+           }
+//           if(charat=='$' )
+//           {
+//               cal1.add(String.valueOf(charat));
+//                System.out.println("the operator is " + charat);
+//                       i++;
+//           }
+           
+            else if (charat == '+' || charat == '-' || charat == '*'
+                    || charat == '/' || charat == '='|| charat==')'||charat=='^') {
+                
+                
+                //Boolean temp = endbracketchecker;
+                //if(charat==')')
+                //{
+                //endbracketchecker = true;
+                //}
+                //else
+                //{
+                //endbracketchecker = false;
+                //}
+                if(concat!="")
+                {
                 cal1.add(concat);
+                }
                 // if(charat!='=')
                 cal1.add(String.valueOf(charat));
                 System.out.println("the value entered is " + concat);
@@ -359,4 +389,5 @@ addButton("^", insert);
     private int prevpos;
     private int nextpos;
     private ArrayList<String> cal = new ArrayList<String>();
+    Boolean endbracketchecker ;
 }

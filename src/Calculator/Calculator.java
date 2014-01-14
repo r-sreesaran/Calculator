@@ -1,12 +1,10 @@
-
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package Calculator;
+
 /**
  *
  * @author sree
@@ -34,7 +32,7 @@ public class Calculator {
     JButton display;
     JPanel panel;
     double result;
-    String lastCommand; 
+    String lastCommand;
     int c;
 
     boolean start;
@@ -81,6 +79,7 @@ class CalculatorPanel extends JPanel {
         add(display, BorderLayout.NORTH);
         ActionListener insert = new InsertAction();
         ActionListener command = new CommandAction();
+        ActionListener clear = new ClearAction();
 
         panel = new JPanel();
         panel.setLayout(new GridLayout(4, 4));
@@ -95,7 +94,7 @@ class CalculatorPanel extends JPanel {
         addButton("5", insert);
         addButton("4", insert);
         addButton("*", insert);
-        addButton("$", insert);
+        addButton("c", clear,insert);
 
         addButton("3", insert);
         addButton("2", insert);
@@ -118,6 +117,13 @@ class CalculatorPanel extends JPanel {
         panel.add(button);
     }
 
+    private void addButton(String label, ActionListener listener, ActionListener listener1) {
+    JButton button = new JButton(label);
+    button.addActionListener(listener);
+    button.addActionListener(listener1);
+    panel.add(button);
+    }
+
     private class InsertAction implements ActionListener {
 
         public void actionPerformed(ActionEvent event) {
@@ -131,13 +137,24 @@ class CalculatorPanel extends JPanel {
             }
         }
     }
+    
+    public class ClearAction implements ActionListener
+    {
 
-    private class CommandAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cal1.removeAll(cal1);
+            display.setText("");
+        }
+    
+    }
+
+    public class CommandAction implements ActionListener {
 
         public void actionPerformed(ActionEvent event) {
             System.out.println("the entire expression is " + fullexpression);
             fullexpression = fullexpression + "=";
-            createstack(cal1,fullexpression);
+            createstack(cal1, fullexpression);
             display.setText("");
             finalcalculation(cal1);
             display.setText(getnext(finalcalculation(cal1), 0));
@@ -147,177 +164,134 @@ class CalculatorPanel extends JPanel {
     public List<String> finalcalculation(List<String> cal) {
         List<String> tempvalue = new ArrayList<String>();
         List<String> tempvalue1 = new ArrayList<String>();
-       String value;
-        int c=0;
+        String value;
+        int c = 0;
         int temp = cal.size();
         int i = 0;
-        int j= 0;
-        int one=0;
+        int j = 0;
+        int one = 0;
         int zero = 0;
-        Boolean te =true;
-        int tempval=0;
+        Boolean te = true;
+        int tempval = 0;
         System.out.println("new list created ");
-           
-        int k=i;
-       
-        i=0;
+
+        int k = i;
+
+        i = 0;
         while (i < cal.size()) {
             value = cal.get(i);
-          while (k < cal.size()) {
-            value = cal.get(k);
-            System.out.println("the value is " + value+" and the position is "+k);
-            System.out.println("it is working properly");
-            k++;
-             }
-            if (value == null||value=="=") {
-                i++;
+            while (k < cal.size()) {
+                value = cal.get(k);
+                System.out.println("the value is " + value + " and the position is " + k);
+                System.out.println("it is working properly");
+                k++;
             }
-           else if (operatorchecker("(",cal)) {
-           System.out.println("there are brackets present and the current temp value "+tempval+"and its position "+j);
-           j=i;
-             te=true;
-                while(te)
-                { 
-                   if(cal.get(j).equals("("))
-                    {   
-                        if(tempval==0)
-                        {
-                        one =j;
-                        System.out.println("value saved");
+            
+            if (value == null || value == "=") {
+                i++;
+            } else if (operatorchecker("(", cal)) {
+                System.out.println("there are brackets present and the current temp value " + tempval + "and its position " + j);
+                j = i;
+                te = true;
+                while (te) {
+                    if (cal.get(j).equals("(")) {
+                        if (tempval == 0) {
+                            one = j;
+                            System.out.println("value saved");
                         }
                         tempval++;
-                        System.out.println("opening braces found and the tempvalue is "+tempval+"its position "+j);
-                       j++;
-                                     
-                    }
-                    else if(cal.get(j).equals(")")){
-                        tempval--;
-                        System.out.println("closing braces found and the tempvalue is  "+tempval+"its position"+j);
+                        System.out.println("opening braces found and the tempvalue is " + tempval + "its position " + j);
+                        j++;
 
-                        if(tempval==0)
-                        {
+                    } else if (cal.get(j).equals(")")) {
+                        tempval--;
+                        System.out.println("closing braces found and the tempvalue is  " + tempval + "its position" + j);
+
+                        if (tempval == 0) {
                             zero = j;
-                            te= false;
+                            te = false;
                         }
                         j++;
-                    }
-                    else
-                    {
-                        System.out.println("value or an operator found the position is  "+j+" the value is"+cal.get(j));
+                    } else {
+                        System.out.println("value or an operator found the position is  " + j + " the value is" + cal.get(j));
                         j++;
                     }
 
                 }
-               // one =j;
-               // System.out.println("the size of the list is "+cal.size());
-                System.out.println("the start and end position of the sub list"+(one+1)+(zero-1));
-                c=one+1;
-                int q=0;
-                while(q<tempvalue.size())
-                {
+                // one =j;
+                // System.out.println("the size of the list is "+cal.size());
+                System.out.println("the start and end position of the sub list" + (one + 1) + (zero - 1));
+                c = one + 1;
+                int q = 0;
+                while (q < tempvalue.size()) {
 //                    if(cal.get(d)==")")
 //                    tempval--;
-                    tempvalue.set(q,null);
+                    tempvalue.set(q, null);
                     q++;
                 }
-                while(c<=zero-1)
-                {
-                    if(c!=zero)
-                    {
-                    tempvalue.add(cal.get(c));
-                    c++;
+                while (c <= zero - 1) {
+                    if (c != zero) {
+                        tempvalue.add(cal.get(c));
+                        c++;
 
-                    }
-                    else
-                    {
+                    } else {
                         tempvalue.add("=");
                         c++;
 
                     }
                 }
                 tempvalue1 = finalcalculation(tempvalue);
-                String temp2 = getnext(tempvalue1,0);
-                k=0;
-             while(k<tempvalue.size())
-             {
-            value = tempvalue.get(k);
-            
-                 System.out.println("the value is " + value+" and the position is "+k);
-            k++;
-             
-             }
-             k=0;
+                String temp2 = getnext(tempvalue1, 0);
+                k = 0;
+                while (k < tempvalue.size()) {
+                    value = tempvalue.get(k);
+
+                    System.out.println("the value is " + value + " and the position is " + k);
+                    k++;
+
+                }
+                k = 0;
                 while (k < cal.size()) {
-            value = cal.get(k);
-            System.out.println("the value is " + value+" and the position is "+k);
-            k++;
-             }
-                System.out.println("the value inserted is "+temp2);
-                int d=one+1;
-                while(d<=zero)
-                {
-//                    if(cal.get(d)==")")
-//                    tempval--;
-                    cal.set(d,null);
+                    value = cal.get(k);
+                    System.out.println("the value is " + value + " and the position is " + k);
+                    k++;
+                }
+                System.out.println("the value inserted is " + temp2);
+                int d = one + 1;
+                while (d <= zero) {
+                    cal.set(d, null);
                     d++;
                 }
-              k=0;
-                cal.set(one,temp2);
-                 while (k < cal.size()) {
-            value = cal.get(k);
-            System.out.println("the value is " + value+" and the position is "+k);
-            k++;
-             }
-                //   cal.set(j,temp2);
-                //List<String> calsub = new ArrayList<String>();
-                //String fullexpression1="";
-                // int d= operatorchecker(")",i);
-                // int j=i;
-//                while(j<d)
-//                {
-//                fullexpression1 = cal.get(j)+fullexpression1;
-//                cal.set(j,null);
-//                j++;
-//                }
-                //System.out.println("the size of the list is "+cal.size());
-                //System.out.println("the start and end position of the sub list"+(i+1)+(d-1));
-                //String temp2 = getnext((ArrayList<String>) finalcalculation(cal.subList(i+1, d-1)),0);
-                // cal.set(j,temp2);
-                //j++;
-                // while(j<d)
-//                {
-//                cal.set(j,null);
-//                j++;
-//                }
-                // final
-//                createstack(calsub,fullexpression1);
-//                finalcalculation(calsub);
-//                String temp1 = getnext(calsub,0);
-//                cal.set(i,temp1);
+                k = 0;
+                cal.set(one, temp2);
+                while (k < cal.size()) {
+                    value = cal.get(k);
+                    System.out.println("the value is " + value + " and the position is " + k);
+                    k++;
+                }
+
                 i++;
-            }
-            else if (operatorchecker("^",cal)) {
+            } else if (operatorchecker("^", cal)) {
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
                 System.out.println("the previous and the next values are"
                         + prev + "\t" + next);
-                Double d = pow(Double.valueOf(prev),Integer.parseInt(next));
+                Double d = pow(Double.valueOf(prev), Integer.parseInt(next));
                 cal.set(dpos, String.valueOf(d));
                 System.out.println("the inserted value is " + cal.get(dpos));
-                cal.set(getprevious(dpos - 1,cal), null);
-                cal.set(getnext(dpos + 1,cal), null);
+                cal.set(getprevious(dpos - 1, cal), null);
+                cal.set(getnext(dpos + 1, cal), null);
                 i++;
-            }else if (operatorchecker("$",cal)) {
+            } else if (operatorchecker("$", cal)) {
                 String next = getnext(cal, dpos + 1);
                 System.out.println("the next values are"
-                        +  "\t" + next);
+                        + "\t" + next);
                 Double d = sqrt(Double.parseDouble(next));
                 cal.set(dpos, String.valueOf(d));
                 System.out.println("the inserted value is " + cal.get(dpos));
                 cal.set((dpos + 1), null);
                 i++;
-            }
-            else if (operatorchecker("/",cal)) {
+            } else if (operatorchecker("/", cal)) {
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
                 System.out.println("the previous and the next values are"
@@ -325,10 +299,10 @@ class CalculatorPanel extends JPanel {
                 Double d = Double.valueOf(prev) / Double.valueOf(next);
                 cal.set(dpos, String.valueOf(d));
                 System.out.println("the inserted value is " + cal.get(dpos));
-                cal.set(getprevious(dpos - 1,cal), null);
-                cal.set(getnext(dpos + 1,cal), null);
+                cal.set(getprevious(dpos - 1, cal), null);
+                cal.set(getnext(dpos + 1, cal), null);
                 i++;
-            } else if (operatorchecker("*",cal)) {
+            } else if (operatorchecker("*", cal)) {
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
                 System.out.println("the previous and the next values are"
@@ -336,12 +310,11 @@ class CalculatorPanel extends JPanel {
                 Double d = Double.valueOf(prev) * Double.valueOf(next);
                 cal.set(dpos, String.valueOf(d));
                 System.out.println("the inserted value is " + cal.get(dpos));
-                cal.set(getprevious(dpos - 1,cal), null);
-                cal.set(getnext(dpos + 1,cal), null);
+                cal.set(getprevious(dpos - 1, cal), null);
+                cal.set(getnext(dpos + 1, cal), null);
                 i++;
-            }  else if (operatorchecker("+",cal)) {
-               
-             
+            } else if (operatorchecker("+", cal)) {
+
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
                 System.out.println("the previous and the next values are"
@@ -349,10 +322,10 @@ class CalculatorPanel extends JPanel {
                 Double d = Double.valueOf(prev) + Double.valueOf(next);
                 cal.set(dpos, String.valueOf(d));
                 System.out.println("the inserted value is " + cal.get(dpos));
-                cal.set(getprevious(dpos - 1,cal), null);
-                cal.set(getnext(dpos + 1,cal), null);
+                cal.set(getprevious(dpos - 1, cal), null);
+                cal.set(getnext(dpos + 1, cal), null);
                 i++;
-            } else if (operatorchecker("-",cal)) {
+            } else if (operatorchecker("-", cal)) {
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
                 System.out.println("the previous and the next values are"
@@ -360,11 +333,10 @@ class CalculatorPanel extends JPanel {
                 Double d = Double.valueOf(prev) - Double.valueOf(next);
                 cal.set(dpos, String.valueOf(d));
                 System.out.println("the inserted value is " + cal.get(dpos));
-                cal.set(getprevious(dpos - 1,cal), null);
-                cal.set(getnext(dpos + 1,cal), null);
+                cal.set(getprevious(dpos - 1, cal), null);
+                cal.set(getnext(dpos + 1, cal), null);
                 i++;
-            }
-            else {
+            } else {
                 i++;
             }
             // }
@@ -373,7 +345,7 @@ class CalculatorPanel extends JPanel {
         // display.setText("");
         System.out.println("the size of the array list is " + cal.size());
         //   display.setText(getnext(cal, 0));
-        return cal ;
+        return cal;
     }
 
     public String getnext(List<String> cal, int i) {
@@ -387,7 +359,7 @@ class CalculatorPanel extends JPanel {
         return null;
     }
 
-    public int getnext(int i,List<String> cal) {
+    public int getnext(int i, List<String> cal) {
         while (i <= cal.size()) {
             if (cal.get(i) != null && cal.get(i) != "=") {
                 nextpos = i;
@@ -397,7 +369,6 @@ class CalculatorPanel extends JPanel {
         }
         return 0;
     }
-
 
     public String getprevious(List<String> cal, int i) {
         while (i >= 0) {
@@ -410,7 +381,7 @@ class CalculatorPanel extends JPanel {
         return null;
     }
 
-    public int getprevious(int i,List<String> cal) {
+    public int getprevious(int i, List<String> cal) {
         while (i >= 0) {
             if (cal.get(i) != null && cal.get(i) != "=") {
                 prevpos = i;
@@ -421,7 +392,7 @@ class CalculatorPanel extends JPanel {
         return 0;
     }
 
-    public Boolean operatorchecker(String operator,List<String> cal) {
+    public Boolean operatorchecker(String operator, List<String> cal) {
         int j = 0;
         while (j < cal.size()) {
             if (cal.get(j) == null) {
@@ -436,7 +407,8 @@ class CalculatorPanel extends JPanel {
         }
         return false;
     }
-    public int operatorchecker(String operator,int position,List<String> cal) {
+
+    public int operatorchecker(String operator, int position, List<String> cal) {
         int j = position;
         while (j < cal.size()) {
             if (cal.get(j) == null) {
@@ -452,7 +424,7 @@ class CalculatorPanel extends JPanel {
         return -1;
     }
 
- public Boolean operatorchecker1(String operator,int position,List<String> cal) {
+    public Boolean operatorchecker1(String operator, int position, List<String> cal) {
         int j = position;
         while (j < cal.size()) {
             if (cal.get(j) == null) {
@@ -467,47 +439,23 @@ class CalculatorPanel extends JPanel {
         }
         return false;
     }
- 
-    public void createstack(List<String> cal1,String fullexpression) {
+
+    public void createstack(List<String> cal1, String fullexpression) {
         fullexpressionLength = fullexpression.length();
-int i=0;
+        int i = 0;
         System.out.println("the size of expression" + fullexpressionLength);
         while (i < fullexpressionLength) {
             charat = fullexpression.charAt(i);
-            if(charat=='(' )
-            {
+            if (charat == '(') {
                 cal1.add(String.valueOf(charat));
-             //   System.out.println("the operator is " + charat);
                 i++;
-            }
-//           if(charat=='$' )
-//           {
-//               cal1.add(String.valueOf(charat));
-//                System.out.println("the operator is " + charat);
-//                       i++;
-//           }
+            } else if (charat == '+' || charat == '-' || charat == '*'
+                    || charat == '/' || charat == '=' || charat == ')' || charat == '^') {
 
-            else if (charat == '+' || charat == '-' || charat == '*'
-                    || charat == '/' || charat == '='|| charat==')'||charat=='^') {
-
-
-                //Boolean temp = endbracketchecker;
-                //if(charat==')')
-                //{
-                //endbracketchecker = true;
-                //}
-                //else
-                //{
-                //endbracketchecker = false;
-                //}
-                if(concat!="")
-                {
+                if (concat != "") {
                     cal1.add(concat);
                 }
-                // if(charat!='=')
                 cal1.add(String.valueOf(charat));
-//                System.out.println("the value entered is " + concat);
-//                System.out.println("the operator is " + charat);
                 concat = "";
                 i++;
             } else {
@@ -515,7 +463,6 @@ int i=0;
                 i++;
             }
         }
-    //    System.out.println("the size of arraylist" + cal1.size());
 
     }
 
@@ -532,7 +479,6 @@ int i=0;
     private int prevpos;
     private int nextpos;
     private List<String> cal1 = new ArrayList<String>();
-    Boolean endbracketchecker ;
+    Boolean endbracketchecker;
     private int check;
 }
-

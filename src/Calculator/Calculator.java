@@ -80,6 +80,8 @@ class CalculatorPanel extends JPanel {
         ActionListener insert = new InsertAction();
         ActionListener command = new CommandAction();
         ActionListener clear = new ClearAction();
+        ActionListener clear1 = new Clear();
+        
 
         panel = new JPanel();
         panel.setLayout(new GridLayout(4, 4));
@@ -94,7 +96,7 @@ class CalculatorPanel extends JPanel {
         addButton("5", insert);
         addButton("4", insert);
         addButton("*", insert);
-        addButton("c", clear,insert);
+        addButton("c", clear);
 
         addButton("3", insert);
         addButton("2", insert);
@@ -107,7 +109,7 @@ class CalculatorPanel extends JPanel {
         addButton("=", command);
         addButton("+", insert);
         addButton(")", insert);
-
+        addButton("<-",clear1); 
         add(panel, BorderLayout.CENTER);
     }
 
@@ -117,12 +119,7 @@ class CalculatorPanel extends JPanel {
         panel.add(button);
     }
 
-    private void addButton(String label, ActionListener listener, ActionListener listener1) {
-    JButton button = new JButton(label);
-    button.addActionListener(listener);
-    button.addActionListener(listener1);
-    panel.add(button);
-    }
+    
 
     private class InsertAction implements ActionListener {
 
@@ -143,8 +140,20 @@ class CalculatorPanel extends JPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            cal1.removeAll(cal1);
+          //  cal1.removeAll(cal1);
             display.setText("");
+        }
+    
+    }
+    public class Clear implements ActionListener
+    {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+           String clipped  = display.getText().substring(0,display.getText().length()-1);
+           //substring(0,display.getText().length()-1);
+            display.setText(clipped);
+          //x  display.setText(display.);
         }
     
     }
@@ -158,6 +167,7 @@ class CalculatorPanel extends JPanel {
             display.setText("");
             finalcalculation(cal1);
             display.setText(getnext(finalcalculation(cal1), 0));
+             cal1.removeAll(cal1);
         }
     }
 

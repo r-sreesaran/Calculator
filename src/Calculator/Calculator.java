@@ -1,3 +1,5 @@
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -121,7 +123,7 @@ class CalculatorPanel extends JPanel {
 
     
 
-    private class InsertAction implements ActionListener {
+    private class InsertAction implements ActionListener  {
 
         public void actionPerformed(ActionEvent event) {
             String input = event.getActionCommand();
@@ -164,14 +166,33 @@ class CalculatorPanel extends JPanel {
             System.out.println("the entire expression is " + fullexpression);
             fullexpression = fullexpression + "=";
             createstack(cal1, fullexpression);
+            createstack(validation, fullexpression);
+            validation();    
             display.setText("");
-            finalcalculation(cal1);
+            if(finalcalculation(cal1)==null)
+            {
+            display.setText("ERROR");
+            }
+            else
+            {
             display.setText(getnext(finalcalculation(cal1), 0));
-             cal1.removeAll(cal1);
+                    cal1.removeAll(cal1);
+      
+             }
+                    }
+
+        private void validation() {
+        if(fullexpression.length()<4)
+            {
+            display.setText("Error");
+            }
+          //  else  if(cal)
+         
+            
         }
     }
 
-    public List<String> finalcalculation(List<String> cal) {
+public List<String> finalcalculation(List<String> cal)  {
         List<String> tempvalue = new ArrayList<String>();
         List<String> tempvalue1 = new ArrayList<String>();
         String value;
@@ -196,7 +217,8 @@ class CalculatorPanel extends JPanel {
                 System.out.println("it is working properly");
                 k++;
             }
-            
+            try
+            {
             if (value == null || value == "=") {
                 i++;
             } else if (operatorchecker("(", cal)) {
@@ -205,6 +227,18 @@ class CalculatorPanel extends JPanel {
                 te = true;
                 while (te) {
                     if (cal.get(j).equals("(")) {
+                       
+                        if(bracketchecker(cal)==false)
+                       {
+                         return null;  
+                       }
+                       String prev = getprevious(cal, dpos - 1);
+                       String next = getnext(cal, dpos + 1);
+                        // validation is wrong
+                      if(prev==")"||next==")"||next=="*"||next=="+"||next=="-"||next=="/"||next=="^")
+                       {
+                       return null;
+                       }
                         if (tempval == 0) {
                             one = j;
                             System.out.println("value saved");
@@ -214,6 +248,13 @@ class CalculatorPanel extends JPanel {
                         j++;
 
                     } else if (cal.get(j).equals(")")) {
+                         String prev = getprevious(cal, dpos - 1);
+                       String next = getnext(cal, dpos + 1);
+                      
+                        if(prev=="("||prev=="*"||prev=="+"||prev=="-"||prev=="/"||prev=="^"||next=="(")
+                        {
+                        return null;
+                        }
                         tempval--;
                         System.out.println("closing braces found and the tempvalue is  " + tempval + "its position" + j);
 
@@ -284,7 +325,11 @@ class CalculatorPanel extends JPanel {
             } else if (operatorchecker("^", cal)) {
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
-                System.out.println("the previous and the next values are"
+                if(prev=="("||prev=="*"||prev=="+"||prev=="-"||prev=="/"||prev=="^"||next==")"||next=="*"||next=="+"||next=="-"||next=="/"||next=="^")
+                {
+                return null;
+                }
+                    System.out.println("the previous and the next values are"
                         + prev + "\t" + next);
                 Double d = pow(Double.valueOf(prev), Integer.parseInt(next));
                 cal.set(dpos, String.valueOf(d));
@@ -304,6 +349,10 @@ class CalculatorPanel extends JPanel {
             } else if (operatorchecker("/", cal)) {
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
+                if(prev=="("||prev=="*"||prev=="+"||prev=="-"||prev=="/"||prev=="^"||next==")"||next=="*"||next=="+"||next=="-"||next=="/"||next=="^")
+                {
+                return null;
+                }
                 System.out.println("the previous and the next values are"
                         + prev + "\t" + next);
                 Double d = Double.valueOf(prev) / Double.valueOf(next);
@@ -315,6 +364,10 @@ class CalculatorPanel extends JPanel {
             } else if (operatorchecker("*", cal)) {
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
+                if(prev=="("||prev=="*"||prev=="+"||prev=="-"||prev=="/"||prev=="^"||next==")"||next=="*"||next=="+"||next=="-"||next=="/"||next=="^")
+                {
+                return null;
+                }
                 System.out.println("the previous and the next values are"
                         + prev + "\t" + next);
                 Double d = Double.valueOf(prev) * Double.valueOf(next);
@@ -327,6 +380,10 @@ class CalculatorPanel extends JPanel {
 
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
+                if(prev=="("||prev=="*"||prev=="+"||prev=="-"||prev=="/"||prev=="^"||next==")"||next=="*"||next=="+"||next=="-"||next=="/"||next=="^")
+                {
+                return null;
+                }
                 System.out.println("the previous and the next values are"
                         + prev + "\t" + next);
                 Double d = Double.valueOf(prev) + Double.valueOf(next);
@@ -338,6 +395,10 @@ class CalculatorPanel extends JPanel {
             } else if (operatorchecker("-", cal)) {
                 String prev = getprevious(cal, dpos - 1);
                 String next = getnext(cal, dpos + 1);
+                if(prev=="("||prev=="*"||prev=="+"||prev=="-"||prev=="/"||prev=="^"||next==")"||next=="*"||next=="+"||next=="-"||next=="/"||next=="^")
+                {
+                return null;
+                }
                 System.out.println("the previous and the next values are"
                         + prev + "\t" + next);
                 Double d = Double.valueOf(prev) - Double.valueOf(next);
@@ -352,13 +413,21 @@ class CalculatorPanel extends JPanel {
             // }
             // }
         }
+            catch(Exception e)
+                {
+                    display.setText("ERRROR");
+                    return null;
+                }
+        }
+        
         // display.setText("");
         System.out.println("the size of the array list is " + cal.size());
         //   display.setText(getnext(cal, 0));
         return cal;
     }
 
-    public String getnext(List<String> cal, int i) {
+
+public String getnext(List<String> cal, int i) {
         while (i <= cal.size()) {
             if (cal.get(i) != null && cal.get(i) != "=") {
                 nextpos = i;
@@ -449,6 +518,26 @@ class CalculatorPanel extends JPanel {
         }
         return false;
     }
+    public Boolean bracketchecker(List<String> cal)
+    {
+        for(int i = 0; i<cal.size();i++)
+        {
+        if(cal.get(i)=="(")
+        {
+        Openingbrackets++;
+        }
+        if(cal.get(i)==")")
+        {
+        Closingbrackets++;  
+        }
+        }
+        if(Closingbrackets==Openingbrackets)
+        return true;
+        else
+        return false;
+        
+            
+    }
 
     public void createstack(List<String> cal1, String fullexpression) {
         fullexpressionLength = fullexpression.length();
@@ -476,6 +565,8 @@ class CalculatorPanel extends JPanel {
 
     }
 
+    private int Openingbrackets=0;
+    private int Closingbrackets=0;
     private int dpos;
     private String concat = "";
     private char charat;
@@ -489,6 +580,7 @@ class CalculatorPanel extends JPanel {
     private int prevpos;
     private int nextpos;
     private List<String> cal1 = new ArrayList<String>();
+    private List<String> validation = new ArrayList<String>();
     Boolean endbracketchecker;
     private int check;
 }

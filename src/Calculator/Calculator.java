@@ -127,6 +127,10 @@ class CalculatorPanel extends JPanel {
 
         public void actionPerformed(ActionEvent event) {
             String input = event.getActionCommand();
+            if(display.getText()=="ERROR")
+            {
+            display.setText("");
+            }
             if (start) {
                 display.setText(input);
                 start = false;
